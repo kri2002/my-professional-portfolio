@@ -1,11 +1,10 @@
 [build]
   command = "npm run build"
+  # Next.js usa el output en .next/static/ y funciones en .netlify/functions
   publish = ".next"
 
-[functions]
-  node_bundler = "esbuild"
-  timeout = 15
-
+# Reglas de redireccionamiento para que Next.js funcione correctamente en Netlify
+# Esto dirige todas las peticiones a la función que maneja el SSR/rutas
 [[redirects]]
   from = "/*"
   to = "/.netlify/functions/___netlify-handler"

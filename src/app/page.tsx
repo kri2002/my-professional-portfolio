@@ -1,15 +1,27 @@
-import Hero from '@/components/sections/Hero';
-import { Metadata } from 'next';
+"use client";
 
-export const metadata: Metadata = {
-  title: 'Tu Nombre | Desarrollador Next.js',
-  description: 'Portafolio profesional de desarrollo web frontend, especializado en Next.js, React y Tailwind CSS.',
-};
+import React, { useRef, useEffect } from 'react';
+import { useObserver } from '@/context/ObserverContext';
+import About from '@/components/sections/About';
+import Experience from '@/components/sections/Experience';
+
 
 export default function HomePage() {
+  const heroRef = useRef<HTMLDivElement>(null);
+  const observe = useObserver();
+
+  useEffect(() => {
+    if (heroRef.current) observe(heroRef.current);
+  }, [observe]);
+
   return (
-    <>
-      <Hero />
-    </>
+    <div className="max-w-4xl">
+      
+      <div ref={heroRef} id="hero" className="absolute top-0 h-10 w-full pointer-events-none" />
+
+      <About />
+      <Experience />
+      
+    </div>
   );
 }

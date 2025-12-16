@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useRef } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import Link from "next/link";
 import { FiGithub, FiLinkedin, FiTwitter, FiArrowDown } from "react-icons/fi";
 import { useActiveSection } from "@/context/ActiveSectionContext";
@@ -98,10 +98,20 @@ const WireframeShapes = () => {
 };
 
 const Scene3D = () => {
+  // Detectamos móvil para alejar la cámara y que los objetos no estorben
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 1024);
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
+
   return (
     <div className="absolute inset-0 -z-10" style={{ pointerEvents: 'none' }}>
       <Canvas 
-        camera={{ position: [0, 0, 14], fov: 45 }} 
+        camera={{ position: [0, 0, isMobile ? 22 : 14], fov: 45 }} 
         dpr={[1, 1.5]}
         style={{ pointerEvents: 'none' }}
       >
@@ -124,44 +134,51 @@ const NavPanel: React.FC = () => {
   ];
 
   return (
-    <div className="sticky top-0 flex flex-col h-screen w-full pointer-events-none isolate">
+    <div className="flex flex-col w-full lg:h-screen lg:sticky lg:top-0 pointer-events-auto relative isolate bg-[#0f172a]">
       
+      {/* FONDO 3D */}
       <motion.div
         className="fixed inset-0 -z-50"
+        // En móvil siempre mostramos el fondo (opacity 1), en desktop depende de si es hero
         initial={{ opacity: 0 }}
-        animate={{ opacity: isHero ? 1 : 0 }}
-        transition={{ duration: .5, ease: "easeInOut" }}
+        animate={{ opacity: 1 }} // Siempre visible para dar ambiente
+        transition={{ duration: 1.5, ease: "easeInOut" }}
         style={{ pointerEvents: "none" }}
       >
-        <div className="absolute inset-0 bg-linear-to-b from-[#0f172a] via-transparent to-[#0f172a] z-10" />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#0f172a] via-transparent to-[#0f172a] z-10" />
         <div className="absolute inset-0 bg-radial-at-c from-transparent via-[#0f172a]/60 to-[#0f172a] z-10" />
         
         <Scene3D />
       </motion.div>
 
+      {/* CONTENEDOR PRINCIPAL: TEXTO + HEADER */}
       <motion.div 
         layout
         transition={transitionConfig}
-        className={`flex flex-col z-20 pointer-events-none ${
-          isHero 
-            ? 'h-[calc(100vh-100px)] justify-center items-center' 
-            : 'h-auto justify-start items-start mb-12'
-        }`}
+        className={`flex flex-col z-20 pointer-events-auto px-6 lg:px-0 
+          ${isHero 
+            // MOBILE: Altura automática y padding normal. DESKTOP: Altura completa y centrado
+            ? 'h-auto pt-10 pb-4 lg:h-[calc(100vh-100px)] lg:justify-center lg:items-center lg:pt-0 lg:pb-0' 
+            // NO HERO (Ambos): Alineado arriba
+            : 'h-auto justify-start items-center lg:items-start pt-10 lg:pt-0 mb-4 lg:mb-12' 
+          }`}
       >
         <motion.div 
           layout 
           transition={transitionConfig}
           className={`flex ${
             isHero 
-              ? 'flex-col items-center gap-1' 
-              : 'flex-row items-baseline gap-3'
+              // MOBILE: Siempre fila compacta. DESKTOP: Columna centrada
+              ? 'flex-row items-baseline gap-2 lg:flex-col lg:items-center lg:gap-1' 
+              : 'flex-row items-baseline gap-2 lg:gap-3'
           }`}
         >
           <motion.h1
             layoutId="title-cristo"
             transition={transitionConfig}
             className={`font-extrabold tracking-tight text-white leading-none ${
-              isHero ? 'text-6xl md:text-8xl drop-shadow-2xl' : 'text-5xl'
+              // Texto más pequeño en móvil para que quepa en una línea
+              isHero ? 'text-3xl lg:text-6xl xl:text-8xl drop-shadow-2xl' : 'text-2xl lg:text-5xl'
             }`}
           >
             Cristo
@@ -170,8 +187,8 @@ const NavPanel: React.FC = () => {
           <motion.h1
             layoutId="title-aguilar"
             transition={transitionConfig}
-            className={`font-extrabold tracking-tight leading-none bg-clip-text text-transparent bg-linear-to-r from-indigo-300 via-blue-300 to-indigo-300 bg-size-[200%_auto] animate-gradient ${
-              isHero ? 'text-6xl md:text-8xl drop-shadow-xl pb-3' : 'text-5xl text-indigo-400 pb-2'
+            className={`font-black tracking-tight leading-none text-transparent [-webkit-text-stroke:1px_#818cf8] lg:[-webkit-text-stroke:2px_#818cf8] ${
+              isHero ? 'text-3xl lg:text-6xl xl:text-8xl pb-1 lg:pb-3' : 'text-2xl lg:text-5xl text-indigo-400 pb-1 lg:pb-2'
             }`}
           >
             Aguilar
@@ -181,27 +198,32 @@ const NavPanel: React.FC = () => {
         <motion.h2 
           layoutId="subtitle"
           transition={transitionConfig}
-          className={`font-medium tracking-wide text-slate-200 mt-3 whitespace-nowrap leading-none ${
-            isHero ? 'text-xl md:text-3xl' : 'text-xl'
+          className={`font-medium tracking-wide text-slate-200 mt-1 lg:mt-3 whitespace-nowrap leading-none ${
+            isHero ? 'text-sm lg:text-xl md:text-3xl' : 'text-xs lg:text-xl'
           }`}
           style={{ transformOrigin: isHero ? "center" : "left" }}
           animate={{ paddingLeft: isHero ? 0 : 4 }}
         >
-          Ingeniero en Desarrollo de Software
+          Ingeniero Frontend
         </motion.h2>
 
+        {/* Descripción: Oculta en móvil para limpiar la vista, visible en desktop */}
         <motion.p 
           layoutId="description" 
           transition={transitionConfig}
           className={`text-slate-400 whitespace-nowrap leading-none ${
-            isHero ? 'text-base mt-5 text-center max-w-md font-light' : 'text-xs mt-3 text-left'
+            // En móvil ocultamos la descripción si es Hero para que sea solo un Header limpio
+            isHero 
+                ? 'hidden lg:block text-base mt-5 text-center max-w-md font-light' 
+                : 'hidden lg:block text-xs mt-3 text-left'
           }`}
           style={{ transformOrigin: isHero ? "center" : "left" }}
           animate={{ paddingLeft: isHero ? 0 : 4 }}
         >
-          Convirtiendo problemas complejos en soluciones desplegables.
+          Construyo experiencias digitales sólidas y escalables.
         </motion.p>
 
+        {/* Flecha: SOLO visible en DESKTOP cuando es Hero */}
         <AnimatePresence>
           {isHero && (
             <motion.div 
@@ -210,7 +232,8 @@ const NavPanel: React.FC = () => {
               initial={{ opacity: 0, marginTop: 0, scale: 0.8 }}
               animate={{ opacity: 1, marginTop: 56, scale: 1, transition: { delay: 0.5, type: "spring" as const } }}
               exit={{ opacity: 0, marginTop: 0, scale: 0.8, transition: { duration: 0.2 } }}
-              className="flex flex-col items-center gap-4"
+              // CLAVE: 'hidden lg:flex' para que no salga en el móvil
+              className="hidden lg:flex flex-col items-center gap-4"
             >
               <motion.div 
                 animate={{ y: [0, 8, 0] }} 
@@ -224,6 +247,29 @@ const NavPanel: React.FC = () => {
         </AnimatePresence>
       </motion.div>
 
+      {/* MENÚ MÓVIL: Siempre visible debajo del nombre */}
+      <motion.nav 
+        layout
+        transition={transitionConfig}
+        className={`flex z-20 pointer-events-auto lg:hidden w-full justify-center pb-4`}
+      >
+         <div className="flex gap-5">
+            {navItems.map((item) => (
+                <Link 
+                    key={item.id} 
+                    href={item.href} 
+                    onClick={() => setActiveSection(item.id)} 
+                    className={`text-[10px] font-bold tracking-widest uppercase transition-colors ${
+                        activeSection === item.id ? "text-indigo-400" : "text-slate-400"
+                    }`}
+                >
+                    {item.label}
+                </Link>
+            ))}
+         </div>
+      </motion.nav>
+
+      {/* MENÚ DESKTOP: Comportamiento original (Sidebar) */}
       <motion.nav 
         layout
         transition={transitionConfig}
@@ -270,7 +316,7 @@ const NavPanel: React.FC = () => {
       <motion.div 
         layout
         transition={transitionConfig}
-        className="mt-auto flex space-x-6 pl-1 pb-1 z-20 pointer-events-auto"
+        className="hidden lg:flex mt-auto space-x-6 pl-1 pb-1 z-20 pointer-events-auto"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
       >

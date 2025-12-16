@@ -28,16 +28,35 @@ const LayoutContent: React.FC<MainLayoutProps> = ({ children }) => {
   );
 
   useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 1024) {
+        setIsHeroMode(false);
+      } else if (activeSection === "hero") {
+        setIsHeroMode(true);
+      }
+    };
+
+    handleResize();
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, [activeSection]);
+
+  useEffect(() => {
     if (!isHeroMode && observedSection) {
       setActiveSection(observedSection);
     }
   }, [observedSection, setActiveSection, isHeroMode]);
 
   useEffect(() => {
-    if (activeSection === "hero") setIsHeroMode(true);
+    if (activeSection === "hero" && window.innerWidth >= 1024) {
+      setIsHeroMode(true);
+    }
   }, [activeSection]);
 
   const handleWheel = (e: React.WheelEvent) => {
+    if (typeof window !== "undefined" && window.innerWidth < 1024) return;
+
     if (isHeroMode) {
       if (e.deltaY > 0) {
         setIsHeroMode(false);
@@ -51,10 +70,13 @@ const LayoutContent: React.FC<MainLayoutProps> = ({ children }) => {
   };
 
   const handleTouchStart = (e: React.TouchEvent) => {
+    if (typeof window !== "undefined" && window.innerWidth < 1024) return;
     touchStartY.current = e.touches[0].clientY;
   };
 
   const handleTouchMove = (e: React.TouchEvent) => {
+    if (typeof window !== "undefined" && window.innerWidth < 1024) return;
+
     const touchEndY = e.touches[0].clientY;
     const deltaY = touchStartY.current - touchEndY;
 

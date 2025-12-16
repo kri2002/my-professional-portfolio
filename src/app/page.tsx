@@ -17,8 +17,6 @@ export default function HomePage() {
   return (
     <div className="max-w-4xl">
       
-      <div ref={heroRef} id="hero" className="absolute top-0 h-10 w-full pointer-events-none" />
-
       <About />
       <Experience />
       

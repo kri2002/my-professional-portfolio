@@ -10,7 +10,7 @@ const spaceGrotesk = Space_Grotesk({
 });
 
 export const metadata: Metadata = {
-  title: 'Cristo Aguilar | Portafolio de Desarrollo',
+  title: 'Cristo Aguilar',
   description: 'Portafolio creado con Next.js y Tailwind CSS',
 };
 

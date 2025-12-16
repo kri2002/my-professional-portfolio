@@ -180,10 +180,14 @@ const NavPanel: React.FC = () => {
   const navItems = [
     { id: "about", label: "ACERCA DE MÍ", href: "#about" },
     { id: "experience", label: "EXPERIENCIA", href: "#experience" },
+    { id: "projects", label: "PROYECTOS", href: "#projects" },
+    { id: "learning", label: "OTROS PROYECTOS", href: "#learning" },
+    { id: "education", label: "EDUCACIÓN", href: "#education" },
+    { id: "contact", label: "CONTACTO", href: "#contact" },
   ];
 
   return (
-    <div className="flex flex-col w-full lg:h-screen lg:sticky lg:top-0 pointer-events-auto relative isolate bg-[#0f172a]">
+    <div className="flex flex-col w-full lg:h-screen lg:sticky lg:top-0 pointer-events-auto relative isolate">
       <motion.div
         className="fixed inset-0 -z-50"
         initial={{ opacity: 0 }}
@@ -204,7 +208,7 @@ const NavPanel: React.FC = () => {
           ${
             isHero
               ? "h-auto pt-10 pb-4 lg:h-[calc(100vh-100px)] lg:justify-center lg:items-center lg:pt-0 lg:pb-0"
-              : "h-auto justify-start items-center lg:items-start pt-10 lg:pt-0 mb-4 lg:mb-12"
+              : "h-auto justify-start items-center lg:items-start pt-10 lg:pt-0 mb-4 lg:mb-8"
           }`}
       >
         <motion.div
@@ -250,7 +254,7 @@ const NavPanel: React.FC = () => {
           style={{ transformOrigin: isHero ? "center" : "left" }}
           animate={{ paddingLeft: isHero ? 0 : 4 }}
         >
-          DESARROLLADOR FRONTEND  <br /> ESPECIALISTA EN REACT & NEXT.JS 
+          INGENIERO FRONTEND  <br /> ESPECIALISTA EN REACT & NEXT.JS 
         </motion.h2>
 
         <motion.p
@@ -327,7 +331,7 @@ const NavPanel: React.FC = () => {
       <motion.nav
         layout
         transition={transitionConfig}
-        className={`hidden lg:flex flex-col pl-1 mt-8 z-20 pointer-events-auto ${
+        className={`hidden lg:flex flex-col pl-1 mt-0 z-20 pointer-events-auto ${
           isHero ? "flex-none h-0 opacity-0" : "flex-1 opacity-100"
         }`}
       >
@@ -377,13 +381,11 @@ const NavPanel: React.FC = () => {
       <motion.div
         layout
         transition={transitionConfig}
-        className="hidden lg:flex mt-auto space-x-6 pl-1 pb-1 z-20 pointer-events-auto"
+        className="hidden lg:flex mt-auto space-x-6 pl-1 pb-1 pt-16 z-20 pointer-events-auto"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
       >
         <FiGithub className="h-5 w-5 text-slate-500 hover:text-indigo-300 cursor-pointer transition-colors duration-300" />
-        <FiLinkedin className="h-5 w-5 text-slate-500 hover:text-indigo-300 cursor-pointer transition-colors duration-300" />
-        <FiTwitter className="h-5 w-5 text-slate-500 hover:text-indigo-300 cursor-pointer transition-colors duration-300" />
       </motion.div>
     </div>
   );
